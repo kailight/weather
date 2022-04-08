@@ -3,17 +3,16 @@ const getOpenWeatherApiKey = require('./getOpenWeatherApiKey');
 const Elasticache = require('./libs/Elasticache');
 
 let APIKEY
-// c5254ab10aedd127eede81f24e4cf25c
 
 exports.handler = async (event, context) => {
 
-  const city = event.city || 'Non Existent City Name'; // event._city: 'Cityname', passed from event as a parameter
+  const city = event.city || 'Sochi';
 
   let cachedData;
   try {
-    console.log("Test1");
+    console.log("Reading data from cache...");
     cachedData = await Elasticache.read(city);
-    console.log("Test2");
+    console.log("Read data from cache!");
   } catch (e) {
     console.log( 'Issue reading from cache', e);
     return {
@@ -26,16 +25,16 @@ exports.handler = async (event, context) => {
     cachedData._cached = true;
     return {
       statusCode: 200,
-      body: JSON.stringify({ cachedData } )
+      body: JSON.stringify( cachedData )
     };
   }
 
-/*
-  return {
-      statusCode: 200,
-      body: 'stub'
-  };
-*/
+  /*
+    return {
+        statusCode: 200,
+        body: 'stub'
+    };
+  */
 
   let data;
   try {
@@ -62,9 +61,10 @@ exports.handler = async (event, context) => {
 
   if (data) {
     try {
+      console.log( 'Writing data to cache' );
       await Elasticache.write(city, data);
     } catch (e) {
-      console.log(e);
+      console.log('Issue writing to cache' , e);
       return {
         statusCode: 500,
         body: JSON.stringify( 'Issue writing to cache' )
