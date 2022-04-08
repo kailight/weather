@@ -14,7 +14,7 @@ A node server, uploaded as Lambda function to AWS, called by AWS API Gateway
 
 # NOTES
 
-### This was my first project fully in AWS Environment.
+### This was my first fully cloud-based project in AWS Environment.
 
 #### The challenging part for me was to make it work in VPC.
 
