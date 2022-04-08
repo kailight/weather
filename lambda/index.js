@@ -3,10 +3,11 @@ const getOpenWeatherApiKey = require('./getOpenWeatherApiKey');
 const Elasticache = require('./libs/Elasticache');
 
 let APIKEY
+// c5254ab10aedd127eede81f24e4cf25c
 
 exports.handler = async (event, context) => {
 
-  const city = event.city || 'Sochi'; // event._city: 'Cityname', passed from event as a parameter
+  const city = event.city || 'Non Existent City Name'; // event._city: 'Cityname', passed from event as a parameter
 
   let cachedData;
   try {
@@ -38,24 +39,24 @@ exports.handler = async (event, context) => {
 
   let data;
   try {
-    
+
     if (!APIKEY) {
       console.log('Retrieving secret from Secrets Manager');
       APIKEY = await getOpenWeatherApiKey();
       console.log('Got secret from Secrets Manager', APIKEY);
     }
     console.log('Getting data from OpenWeatherAPI', APIKEY);
-    data = await getDataFromOpenWeatherAPI(city);
+    data = await getDataFromOpenWeatherAPI(APIKEY, city);
     console.log('Got data from OpenWeatherAPI', APIKEY);
-    
+
   } catch(e) {
-    
+
     console.log('Issue with OpenWeather API', e);
     return {
       statusCode: 500,
       body: JSON.stringify( 'Issue with OpenWeather API' )
     };
-    
+
   }
 
 
